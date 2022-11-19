@@ -31,7 +31,7 @@ CREATE TABLE tb_book (
     title_book VARCHAR(100) NOT NULL,
     limit_days_loan INT(2) NOT NULL,
     year_book YEAR NOT NULL,
-    syphosis_book TEXT,
+    synopsis_book TEXT,
     id_publisher INT NOT NULL,
     CONSTRAINT fk_publisher_book 
 		FOREIGN KEY (id_publisher)
@@ -67,35 +67,13 @@ CREATE TABLE tb_book_category (
     CONSTRAINT uq_book_category
 		UNIQUE KEY (id_book , id_category)
 );
-    
-CREATE TABLE tb_library (
-    id_library INT AUTO_INCREMENT PRIMARY KEY,
-	name_library VARCHAR(50) NOT NULL,
-    id_physical_structure INT NOT NULL,
-    CONSTRAINT fk_library
-		FOREIGN KEY (id_physical_structure)
-			REFERENCES tb_physical_structure(id_physical_structure),
-    CONSTRAINT uq_library
-		UNIQUE KEY (name_library)
-);
-
-CREATE TABLE tb_physical_structure (
-	id_physical_structure INT AUTO_INCREMENT PRIMARY KEY,
-	name_physical_level VARCHAR(50) NOT NULL,
-    num_physical_level INT NOT NULL,
-    id_parent_physical_level INT,
-    CONSTRAINT fk_physical_structure_self 
-		FOREIGN KEY (id_parent_physical_level)
-			REFERENCES tb_physical_structure (id_physical_structure),
-	CONSTRAINT uq_physical_structure
-		UNIQUE KEY (name_physical_level)
-);
 
 CREATE TABLE tb_copy (
     id_copy INT AUTO_INCREMENT PRIMARY KEY,
     code_copy VARCHAR(20) NOT NULL,
-    avaible_copy BIT NOT NULL DEFAULT 1,
+    available_copy BIT NOT NULL DEFAULT 1,
     id_book INT NOT NULL,
+    address_copy VARCHAR(100) NOT NULL,
     CONSTRAINT fk_copy_book 
 		FOREIGN KEY (id_book)
 			REFERENCES tb_book (id_book),
@@ -117,6 +95,7 @@ CREATE TABLE tb_user (
     password_user VARCHAR(255) NOT NULL,
     phone_number_user CHAR(13) NOT NULL,
     address_user TEXT NOT NULL,
+    confirmed_account BIT NOT NULL DEFAULT(0),
     id_user_type INT NOT NULL,
     CONSTRAINT fk_user_user_type 
 		FOREIGN KEY (id_user_type)
@@ -128,10 +107,11 @@ CREATE TABLE tb_loan(
 	id_loan INT AUTO_INCREMENT PRIMARY KEY,
     id_user INT NOT NULL,
     id_copy INT NOT NULL,
-    dt_expected_collect DATE NOT NULL DEFAULT(CURRENT_DATE),
+    dt_expected_collect DATE NOT NULL DEFAULT (CURRENT_DATE),
     dt_loan DATE NOT NULL DEFAULT(CURRENT_DATE),
     dt_expected_devolution_loan DATE NOT NULL,
     dt_real_devolution_loan DATE,
+    approved_loan BIT NOT NULL DEFAULT(0),
     CONSTRAINT fk_loan_user 
 		FOREIGN KEY (id_user) 
 			REFERENCES tb_user(id_user),
@@ -141,3 +121,7 @@ CREATE TABLE tb_loan(
 	CONSTRAINT uq_loan 
 		UNIQUE KEY (id_user, id_copy, dt_loan)
 );
+
+-- Inserções
+INSERT INTO tb_user_type(name_user_type) VALUES
+	('Usuario Comum'), ('Bibliotecario'), ('Gerente');
