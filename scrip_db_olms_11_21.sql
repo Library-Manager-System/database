@@ -109,7 +109,7 @@ CREATE TABLE tb_loan(
     id_user INT NOT NULL,
     id_copy INT NOT NULL,
     dt_expected_collect DATE NOT NULL DEFAULT (CURRENT_DATE),
-    dt_loan DATE NOT NULL DEFAULT(CURRENT_DATE),
+    dt_loan DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dt_expected_devolution_loan DATE NOT NULL,
     dt_real_devolution_loan DATE,
     approved_loan BIT NOT NULL DEFAULT(0),
